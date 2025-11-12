@@ -1,684 +1,251 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>MSME / Corporate Multi-step Form</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MSME Corporate Registration</title>
 <style>
-  :root{
-    --bg:#f6f7fb; --card:#ffffff; --accent:#404d01; --muted:#6b7280;
-    --danger:#e53e3e; --ok:#16a34a;
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background: #f6f6f6;
+    color: #333;
   }
-  *{box-sizing:border-box}
-  body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;background:var(--bg);color:#111}
-  .container{max-width:880px;margin:28px auto;padding:20px}
-  .card{background:var(--card);border-radius:12px;box-shadow:0 6px 24px rgba(16,24,40,0.06);padding:20px}
-  header{display:flex;align-items:center;gap:12px;margin-bottom:16px}
-  h1{font-size:20px;margin:0}
-  .progress{height:8px;background:#e6e9ef;border-radius:12px;overflow:hidden;margin:12px 0}
-  .progress > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),#6b8b00);width:0%}
-  form{margin-top:8px}
-  .step{display:none}
-  .step.active{display:block}
-  .row{display:flex;gap:12px;flex-wrap:wrap}
-  .field{flex:1 1 220px;min-width:160px;margin-bottom:12px}
-  label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
-  input[type="text"],input[type="email"],input[type="tel"],input[type="date"],input[type="password"],select,textarea{
-    width:100%;padding:10px;border:1px solid #e6e9ef;border-radius:8px;background:transparent;
+  .container {
+    max-width: 500px;
+    background: #fff;
+    margin: 30px auto;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
   }
-  textarea{min-height:100px;resize:vertical}
-  .actions{display:flex;justify-content:space-between;gap:12px;margin-top:14px;flex-wrap:wrap}
-  button{padding:10px 14px;border-radius:10px;border:0;background:var(--accent);color:#fff;cursor:pointer}
-  button.ghost{background:transparent;color:var(--accent);border:1px solid #e6e9ef}
-  .muted{color:var(--muted);font-size:13px}
-  .small{font-size:13px}
-  .file-row{display:flex;gap:8px;align-items:center}
-  .file-name{font-size:13px;color:var(--muted)}
-  .chip{display:inline-block;padding:6px 8px;border-radius:999px;background:#f1f5f9;margin-right:6px}
-  .list{margin:0;padding:0;list-style:none}
-  .card-sub{background:#fbfefb;border:1px dashed #e6e9ef;padding:12px;border-radius:8px;margin-bottom:12px}
-  .danger{color:var(--danger)}
-  .ok{color:var(--ok)}
-  .mini{font-size:12px;color:var(--muted)}
-  .summary{background:#fff;border-radius:8px;padding:12px;border:1px solid #eef2f7;max-height:320px;overflow:auto}
-  @media (max-width:560px){ .row{flex-direction:column} .actions{flex-direction:column-reverse} header{gap:8px} h1{font-size:16px} }
-  .avatar-preview{width:72px;height:72px;border-radius:8px;object-fit:cover;border:1px solid #eef2f7}
-  .small-btn{padding:6px 10px;border-radius:8px;font-size:13px}
-  .add-btn{background:#eef2ff;color:#1d4ed8}
-  .remove-btn{background:#fff;border:1px solid #f3e5e5;color:var(--danger)}
-  .notice{font-size:13px;background:#fff3cd;border-left:4px solid #f2c94c;padding:10px;border-radius:6px}
+  h2 {
+    font-size: 20px;
+    text-align: center;
+    color: #404d01;
+  }
+  label {
+    display: block;
+    margin-top: 15px;
+    font-size: 14px;
+  }
+  input, select, textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+  }
+  input[type=file] {
+    border: none;
+  }
+  .button-row {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+  button {
+    padding: 10px 15px;
+    background: #404d01;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  button:disabled {
+    background: #ccc;
+  }
+  .step {
+    display: none;
+  }
+  .step.active {
+    display: block;
+  }
+  @media (max-width: 600px) {
+    .container {
+      margin: 10px;
+      padding: 15px;
+    }
+    h2 {
+      font-size: 18px;
+    }
+  }
 </style>
 </head>
 <body>
+
 <div class="container">
-  <div class="card" role="main" aria-labelledby="formTitle">
-    <header>
-      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" aria-hidden><rect width="24" height="24" rx="6" fill="#f3f6f1"/><path d="M8 12h8M8 16h8M8 8h8" stroke="#404d01" stroke-width="1.6" stroke-linecap="round"/></svg>
-      <div>
-        <h1 id="formTitle">MSME & Corporate Onboarding — Multi-step Form</h1>
-        <div class="mini">Account setup → Identity → Business → Directors → Review</div>
+  <form id="msmeForm">
+    <!-- Step 1: Personal Info -->
+    <div class="step active">
+      <h2>Personal Information</h2>
+      <label>First Name</label>
+      <input type="text" required>
+      <label>Last Name</label>
+      <input type="text" required>
+      <label>Other Name</label>
+      <input type="text">
+      <label>Country</label>
+      <select required>
+        <option>Nigeria</option>
+      </select>
+      <label>State</label>
+      <input type="text" placeholder="Abuja">
+      <label>City</label>
+      <input type="text" placeholder="Wuse">
+      <label>Address</label>
+      <input type="text" required>
+      <label>Upload Photograph</label>
+      <input type="file" required>
+      <label>ID Card (Govt. Issued)</label>
+      <input type="file" required>
+      <label>Signature</label>
+      <input type="file" required>
+      <label>Proof of Address (Utility Bill / Bank Statement)</label>
+      <input type="file" required>
+      <div class="button-row">
+        <button type="button" id="next1">Next</button>
       </div>
-    </header>
+    </div>
 
-    <div class="progress" aria-hidden><i id="progressBar" style="width:0%"></i></div>
-
-    <form id="multiForm" novalidate>
-      <!-- STEP 1: Account setup + 2FA -->
-      <section class="step active" data-step="1">
-        <h2 style="margin-top:0">Account setup & 2FA</h2>
-        <div class="row">
-          <div class="field"><label for="firstName">First name</label><input id="firstName" name="firstName" type="text" required></div>
-          <div class="field"><label for="lastName">Last name</label><input id="lastName" name="lastName" type="text" required></div>
-          <div class="field"><label for="otherName">Other name (optional)</label><input id="otherName" name="otherName" type="text"></div>
-        </div>
-        <div class="row">
-          <div class="field"><label for="email">Email</label><input id="email" name="email" type="email" required></div>
-          <div class="field"><label for="phone">Phone number</label><input id="phone" name="phone" type="tel" required></div>
-        </div>
-        <div class="row">
-          <div class="field"><label for="password">Password</label><input id="password" name="password" type="password" minlength="8" required></div>
-          <div class="field"><label for="confirmPassword">Confirm password</label><input id="confirmPassword" name="confirmPassword" type="password" minlength="8" required></div>
-        </div>
-
-        <div style="margin-top:12px">
-          <label class="small">Choose 2FA method</label>
-          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px">
-            <label class="chip"><input type="radio" name="twofa" value="sms" checked> SMS (OTP)</label>
-            <label class="chip"><input type="radio" name="twofa" value="email"> Email (OTP)</label>
-          </div>
-        </div>
-
-        <div style="margin-top:12px" id="otpArea">
-          <button type="button" id="sendOtp" class="small-btn">Send OTP</button>
-          <span id="sentTo" class="mini muted" style="margin-left:10px"></span>
-          <div style="margin-top:8px;display:flex;gap:8px;align-items:center">
-            <input id="inputOtp" placeholder="Enter OTP" style="padding:10px;border-radius:8px;border:1px solid #e6e9ef">
-            <button type="button" id="verifyOtp" class="small-btn">Verify</button>
-            <div id="otpStatus" class="mini"></div>
-          </div>
-          <div class="mini muted" style="margin-top:8px">OTP is simulated client-side for demo. In production, replace with backend SMS/email provider.</div>
-        </div>
-      </section>
-
-      <!-- STEP 2: Personal Details -->
-      <section class="step" data-step="2">
-        <h2>Personal details & uploads</h2>
-        <div class="row">
-          <div class="field">
-            <label for="country">Country</label>
-            <select id="country" name="country" required>
-              <option value="Nigeria" selected>Nigeria</option>
-              <option value="Ghana">Ghana</option>
-              <option value="Kenya">Kenya</option>
-            </select>
-          </div>
-          <div class="field"><label for="state">State</label><input id="state" name="state" type="text" value="Abuja" required></div>
-          <div class="field"><label for="city">City / LGA</label><input id="city" name="city" type="text" value="Abuja Wuse" required></div>
-        </div>
-        <div class="field"><label for="address">Residential Address</label><input id="address" name="address" type="text" required></div>
-
-        <h3 style="margin-bottom:8px">Document uploads</h3>
-        <div class="row">
-          <div class="field">
-            <label>Picture / Photograph</label>
-            <div class="file-row"><input type="file" id="photo" accept="image/*"><div class="file-name" id="photoName">No file chosen</div></div>
-          </div>
-          <div class="field">
-            <label>ID Card (Govt. issued)</label>
-            <div class="file-row"><input type="file" id="idCard" accept="image/*,application/pdf"><div class="file-name" id="idCardName">No file chosen</div></div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="field">
-            <label>Signature (image)</label>
-            <div class="file-row"><input type="file" id="signature" accept="image/*"><div class="file-name" id="signatureName">No file chosen</div></div>
-          </div>
-          <div class="field">
-            <label>Proof of Address (Utility / Bank stm)</label>
-            <div class="file-row"><input type="file" id="proofOfAddress" accept="image/*,application/pdf"><div class="file-name" id="proofName">No file chosen</div></div>
-          </div>
-        </div>
-      </section>
-
-      <!-- STEP 3: Identity Verification -->
-      <section class="step" data-step="3">
-        <h2>Identity verification</h2>
-        <div class="row">
-          <div class="field">
-            <label for="idCountry">Country</label>
-            <select id="idCountry"><option value="Nigeria" selected>Nigeria</option><option value="Other">Other</option></select>
-          </div>
-          <div class="field">
-            <label for="idType">Identity document</label>
-            <select id="idType">
-              <option value="BVN">BVN</option>
-              <option value="NIN">NIN</option>
-              <option value="Voter">Voter's Card</option>
-              <option value="Passport">International Passport</option>
-            </select>
-          </div>
-          <div class="field"><label for="idNumber">Card / Document number</label><input id="idNumber" type="text"></div>
-        </div>
-        <div class="row">
-          <div class="field"><label for="issuedDate">Issuance date</label><input id="issuedDate" type="date"></div>
-          <div class="field"><label for="expiryDate">Expiry date (if applicable)</label><input id="expiryDate" type="date"></div>
-        </div>
-        <div class="field">
-          <label>Upload Document (front/back)</label>
-          <div class="file-row"><input type="file" id="idUpload" accept="image/*,application/pdf" multiple><div class="file-name" id="idUploadName">No file chosen</div></div>
-        </div>
-      </section>
-
-      <!-- STEP 4: Business Details -->
-      <section class="step" data-step="4">
-        <h2>Business details & uploads</h2>
-        <div class="row">
-          <div class="field"><label for="businessName">Business name</label><input id="businessName" type="text" required></div>
-          <div class="field"><label for="regNumber">Registration number</label><input id="regNumber" type="text"></div>
-          <div class="field"><label for="regType">Registration type</label>
-            <select id="regType">
-              <option value="Business Name">Business Name</option>
-              <option value="Limited">Limited</option>
-              <option value="NGO">NGO</option>
-              <option value="Cooperative">Cooperative</option>
-            </select>
-          </div>
-        </div>
-        <div class="row">
-          <div class="field"><label for="bizCountry">Country</label><select id="bizCountry"><option value="Nigeria" selected>Nigeria</option></select></div>
-          <div class="field"><label for="bizEmail">Business Email</label><input id="bizEmail" type="email"></div>
-          <div class="field"><label for="bizPhone">Business phone</label><input id="bizPhone" type="tel"></div>
-        </div>
-        <div class="row">
-          <div class="field"><label for="website">Website (optional)</label><input id="website" type="text"></div>
-          <div class="field"><label for="supportPhone">Support phone</label><input id="supportPhone" type="tel"></div>
-        </div>
-
-        <h3 style="margin-bottom:8px">Business document uploads</h3>
-        <div class="card-sub">
-          <div class="field"><label>Incorporation certificate</label><input type="file" id="incorp"><div class="file-name" id="incName">No file chosen</div></div>
-          <div class="field"><label>CAC02 / CAC07 / Status report</label><input type="file" id="cac"><div class="file-name" id="cacName">No file chosen</div></div>
-          <div class="field"><label>Memart / Articles</label><input type="file" id="memart"><div class="file-name" id="memartName">No file chosen</div></div>
-          <div class="field"><label>Proof of Business Address</label><input type="file" id="bizProof"><div class="file-name" id="bizProofName">No file chosen</div></div>
-          <div class="field"><label>AML Policy (optional)</label><input type="file" id="aml"><div class="file-name" id="amlName">No file chosen</div></div>
-          <div class="field"><label>Operating License (optional)</label><input type="file" id="opLicense"><div class="file-name" id="opName">No file chosen</div></div>
-        </div>
-      </section>
-
-      <!-- STEP 5: Use case -->
-      <section class="step" data-step="5">
-        <h2>Use case definition</h2>
-        <div class="row">
-          <div class="field">
-            <label for="useCaseType">Use case type</label>
-            <select id="useCaseType">
-              <option value="Agriculture">Agriculture</option>
-              <option value="Technology">Technology</option>
-              <option value="Real Estate">Real Estate</option>
-              <option value="Trading">Trading</option>
-              <option value="Services">Services</option>
-              <option value="Manufacturing">Manufacturing</option>
-              <option value="Other">Other</option>
-            </select>
-          </div>
-        </div>
-        <div class="field"><label for="useCaseDesc">Use case description (what you're applying for)</label><textarea id="useCaseDesc" placeholder="Describe how this service will be used, scale, and beneficiaries..."></textarea></div>
-      </section>
-
-      <!-- STEP 6: Directors -->
-      <section class="step" data-step="6">
-        <h2>Directors</h2>
-        <div class="notice">Add all company directors. You can add multiple.</div>
-        <div id="directorsWrap" style="margin-top:12px"></div>
-        <div style="margin-top:12px;display:flex;gap:8px">
-          <button type="button" id="addDirector" class="small-btn add-btn">+ Add Director</button>
-          <div class="muted small">Each director: name, contact, photo, id, signature, proof of address</div>
-        </div>
-      </section>
-
-      <!-- STEP 7: Shareholders -->
-      <section class="step" data-step="7">
-        <h2>Shareholders</h2>
-        <div class="notice">Add shareholders (or beneficial owners). You can add multiple.</div>
-        <div id="shareholdersWrap" style="margin-top:12px"></div>
-        <div style="margin-top:12px;display:flex;gap:8px">
-          <button type="button" id="addShareholder" class="small-btn add-btn">+ Add Shareholder</button>
-          <div class="muted small">Each shareholder: name, contact, photo, id, signature, proof of address</div>
-        </div>
-      </section>
-
-      <!-- STEP 8: Review & Submit -->
-      <section class="step" data-step="8">
-        <h2>Review & Submit</h2>
-        <div class="muted small">Review the details below. Click any section's Edit to jump back and change it.</div>
-        <div style="margin-top:12px" id="reviewSections"></div>
-        <div style="margin-top:12px">
-          <label><input type="checkbox" id="confirm" required> I confirm that the information provided is accurate.</label>
-        </div>
-        <div class="summary" style="margin-top:12px" id="jsonPreview"></div>
-      </section>
-
-      <div class="actions" style="margin-top:16px">
-        <div>
-          <button type="button" id="prevBtn" class="ghost">Back</button>
-        </div>
-        <div style="display:flex;gap:8px">
-          <button type="button" id="nextBtn">Next</button>
-          <button type="button" id="submitBtn" style="display:none">Submit</button>
-        </div>
+    <!-- Step 2: Identity Verification -->
+    <div class="step">
+      <h2>Identity Verification</h2>
+      <label>Country</label>
+      <select required>
+        <option>Nigeria</option>
+      </select>
+      <label>Identity Type</label>
+      <select required>
+        <option>BVN</option>
+        <option>NIN</option>
+        <option>Voter’s Card</option>
+        <option>International Passport</option>
+      </select>
+      <label>Card Number</label>
+      <input type="text" required>
+      <label>Issuance Date</label>
+      <input type="date">
+      <label>Expiry Date</label>
+      <input type="date">
+      <div class="button-row">
+        <button type="button" id="back2">Back</button>
+        <button type="button" id="next2">Next</button>
       </div>
-    </form>
-  </div>
-  <div style="text-align:center;margin-top:10px" class="mini muted">Halal Credit.</div>
+    </div>
+
+    <!-- Step 3: Business Details -->
+    <div class="step">
+      <h2>Business Details</h2>
+      <label>Business Name</label>
+      <input type="text" required>
+      <label>Registration Number</label>
+      <input type="text">
+      <label>Registration Type</label>
+      <select required>
+        <option>Business Name</option>
+        <option>Limited Liability</option>
+        <option>Incorporated Trustee</option>
+      </select>
+      <label>Country</label>
+      <select required>
+        <option>Nigeria</option>
+      </select>
+      <label>Email</label>
+      <input type="email" required>
+      <label>Business Phone</label>
+      <input type="tel" required>
+      <label>Website</label>
+      <input type="url" placeholder="https://">
+      <label>Support Phone</label>
+      <input type="tel">
+      <div class="button-row">
+        <button type="button" id="back3">Back</button>
+        <button type="button" id="next3">Next</button>
+      </div>
+    </div>
+
+    <!-- Step 4: Document Uploads -->
+    <div class="step">
+      <h2>Business Documents</h2>
+      <label>Upload Incorporation Certificate</label>
+      <input type="file">
+      <label>CAC 02 & 07 / Status Report</label>
+      <input type="file">
+      <label>MEMART</label>
+      <input type="file">
+      <label>Proof of Address</label>
+      <input type="file">
+      <label>AML Policy (Optional)</label>
+      <input type="file">
+      <label>Operating License (Optional)</label>
+      <input type="file">
+      <div class="button-row">
+        <button type="button" id="back4">Back</button>
+        <button type="button" id="next4">Next</button>
+      </div>
+    </div>
+
+    <!-- Step 5: Use Case -->
+    <div class="step">
+      <h2>Use Case Definition</h2>
+      <label>Use Case Type</label>
+      <select required>
+        <option>Agric Business</option>
+        <option>Retail</option>
+        <option>Fintech</option>
+        <option>Manufacturing</option>
+      </select>
+      <label>Use Case Description</label>
+      <textarea rows="4" placeholder="Describe how your business will use this service..." required></textarea>
+      <div class="button-row">
+        <button type="button" id="back5">Back</button>
+        <button type="button" id="next5">Next</button>
+      </div>
+    </div>
+
+    <!-- Step 6: Directors and Shareholders -->
+    <div class="step">
+      <h2>Directors & Shareholders</h2>
+      <p>Add director and shareholder details with photo, ID, signature, and proof of address.</p>
+      <label>Upload Director’s Picture</label>
+      <input type="file">
+      <label>ID Card</label>
+      <input type="file">
+      <label>Signature</label>
+      <input type="file">
+      <label>Utility Bill</label>
+      <input type="file">
+      <div class="button-row">
+        <button type="button" id="back6">Back</button>
+        <button type="submit">Submit</button>
+      </div>
+    </div>
+  </form>
 </div>
 
 <script>
-(function(){
-  // State
-  const state = { step: 1, maxStep: 8, otp: null, otpVerified: false };
-  const form = document.getElementById('multiForm');
-  const steps = Array.from(document.querySelectorAll('.step'));
-  const progress = document.getElementById('progressBar');
+  const steps = document.querySelectorAll('.step');
+  let current = 0;
+  const showStep = i => steps.forEach((s, index) => s.classList.toggle('active', index === i));
 
-  // helpers
-  function showStep(n){
-    state.step = n;
-    steps.forEach(s => s.classList.toggle('active', +s.dataset.step === n));
-    const pct = Math.round(((n-1)/(state.maxStep-1))*100);
-    progress.style.width = pct + '%';
-    document.getElementById('prevBtn').style.display = n === 1 ? 'none' : 'inline-block';
-    document.getElementById('nextBtn').style.display = n === state.maxStep ? 'none' : 'inline-block';
-    document.getElementById('submitBtn').style.display = n === state.maxStep ? 'inline-block' : 'none';
-    // build review when entering review
-    if(n === state.maxStep) buildReview();
-    saveLocal();
-    window.scrollTo({top:0,behavior:'smooth'});
-  }
+  document.getElementById('next1').onclick = () => showStep(++current);
+  document.getElementById('next2').onclick = () => showStep(++current);
+  document.getElementById('next3').onclick = () => showStep(++current);
+  document.getElementById('next4').onclick = () => showStep(++current);
+  document.getElementById('next5').onclick = () => showStep(++current);
+  document.getElementById('back2').onclick = () => showStep(--current);
+  document.getElementById('back3').onclick = () => showStep(--current);
+  document.getElementById('back4').onclick = () => showStep(--current);
+  document.getElementById('back5').onclick = () => showStep(--current);
+  document.getElementById('back6').onclick = () => showStep(--current);
 
-  // Navigation
-  document.getElementById('nextBtn').addEventListener('click', () => {
-    if(!validateStep(state.step)) return;
-    showStep(Math.min(state.maxStep, state.step+1));
-  });
-  document.getElementById('prevBtn').addEventListener('click', () => showStep(Math.max(1,state.step-1)));
-
-  // Validation per step (basic)
-  function validateStep(step){
-    if(step === 1){
-      // check required fields and OTP
-      const fn = document.getElementById('firstName').value.trim();
-      const ln = document.getElementById('lastName').value.trim();
-      const email = document.getElementById('email').value.trim();
-      const phone = document.getElementById('phone').value.trim();
-      const pw = document.getElementById('password').value;
-      const cpw = document.getElementById('confirmPassword').value;
-      if(!fn || !ln || !email || !phone) { alert('Please complete required account fields.'); return false; }
-      if(pw.length < 8) { alert('Password must be at least 8 characters'); return false; }
-      if(pw !== cpw) { alert('Passwords do not match'); return false; }
-      if(!state.otpVerified){ alert('Please verify OTP to continue.'); return false; }
-      return true;
-    }
-    if(step === 2){
-      const country = document.getElementById('country').value;
-      const addr = document.getElementById('address').value.trim();
-      if(!country || !addr){ alert('Complete personal details'); return false; }
-      return true;
-    }
-    if(step === 4){
-      const bname = document.getElementById('businessName').value.trim();
-      if(!bname){ alert('Please enter business name'); return false; }
-      return true;
-    }
-    return true;
-  }
-
-  // OTP simulation
-  document.getElementById('sendOtp').addEventListener('click', () => {
-    const method = document.querySelector('input[name="twofa"]:checked').value;
-    const dest = method === 'sms' ? document.getElementById('phone').value : document.getElementById('email').value;
-    if(!dest){ alert('Enter phone/email first'); return; }
-    state.otp = (Math.floor(100000 + Math.random()*900000)).toString();
-    state.otpVerified = false;
-    document.getElementById('sentTo').textContent = `OTP sent to ${dest} (simulated)`;
-    // show small simulated message
-    console.log('SIMULATED OTP:', state.otp);
-    // For demo: show a small inline preview (so tester knows OTP)
-    if(!document.getElementById('otpPreview')){
-      const p = document.createElement('div'); p.id='otpPreview'; p.className='mini muted'; p.style.marginTop='6px';
-      p.textContent = `Simulated OTP (for testing): ${state.otp}`;
-      document.getElementById('otpArea').appendChild(p);
-    } else {
-      document.getElementById('otpPreview').textContent = `Simulated OTP (for testing): ${state.otp}`;
-    }
-  });
-  document.getElementById('verifyOtp').addEventListener('click', () => {
-    const val = document.getElementById('inputOtp').value.trim();
-    if(!val){ alert('Enter OTP'); return; }
-    const s = document.getElementById('otpStatus');
-    if(state.otp && val === state.otp){ s.textContent = 'Verified'; s.className='mini ok'; state.otpVerified = true; saveLocal(); }
-    else { s.textContent = 'Invalid OTP'; s.className='mini danger'; state.otpVerified = false; }
-  });
-
-  // file name previews
-  const fileInputs = [
-    ['photo','photoName'],['idCard','idCardName'],['signature','signatureName'],
-    ['proofOfAddress','proofName'],['idUpload','idUploadName'],
-    ['incorp','incName'],['cac','cacName'],['memart','memartName'],['bizProof','bizProofName'],
-    ['aml','amlName'],['opLicense','opName']
-  ];
-  fileInputs.forEach(pair => {
-    const input = document.getElementById(pair[0]);
-    const label = document.getElementById(pair[1]);
-    if(!input) return;
-    input.addEventListener('change', () => {
-      const names = Array.from(input.files).map(f => f.name).join(', ');
-      label.textContent = names || 'No file chosen';
-      saveLocal();
-    });
-  });
-
-  // dynamic directors/shareholders
-  function buildPersonCard(type, data={}, idx){
-    const wrap = document.createElement('div');
-    wrap.className = 'personCard card-sub';
-    wrap.dataset.idx = idx ?? Date.now();
-    wrap.innerHTML = `
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <strong>${type} ${data.firstName?'- '+(data.firstName+' '+(data.lastName||'')):''}</strong>
-        <div>
-          <button type="button" class="small-btn remove-btn">Remove</button>
-        </div>
-      </div>
-      <div style="margin-top:8px" class="personFields">
-        <div class="row">
-          <div class="field"><label>First name</label><input class="p-first" value="${data.firstName||''}"></div>
-          <div class="field"><label>Last name</label><input class="p-last" value="${data.lastName||''}"></div>
-          <div class="field"><label>Other name</label><input class="p-other" value="${data.otherName||''}"></div>
-        </div>
-        <div class="row">
-          <div class="field"><label>Email</label><input class="p-email" value="${data.email||''}"></div>
-          <div class="field"><label>Phone</label><input class="p-phone" value="${data.phone||''}"></div>
-        </div>
-        <div class="row">
-          <div class="field"><label>Address</label><input class="p-address" value="${data.address||''}"></div>
-          <div class="field"><label>Country/State</label><input class="p-country" value="${data.country||''}"></div>
-        </div>
-        <div style="display:flex;gap:8px;margin-top:8px">
-          <div>
-            <label>Photo</label><input type="file" class="p-photo" accept="image/*"><div class="file-name p-photo-name">${data.photoName||'No file chosen'}</div>
-          </div>
-          <div>
-            <label>ID</label><input type="file" class="p-id" accept="image/*,application/pdf"><div class="file-name p-id-name">${data.idName||'No file chosen'}</div>
-          </div>
-          <div>
-            <label>Signature</label><input type="file" class="p-sig" accept="image/*"><div class="file-name p-sig-name">${data.sigName||'No file chosen'}</div>
-          </div>
-          <div>
-            <label>Proof of Address</label><input type="file" class="p-proof" accept="image/*,application/pdf"><div class="file-name p-proof-name">${data.proofName||'No file chosen'}</div>
-          </div>
-        </div>
-      </div>
-    `;
-    // remove handler
-    wrap.querySelector('.remove-btn').addEventListener('click', () => {
-      if(confirm('Remove this entry?')) { wrap.remove(); saveLocal(); }
-    });
-    // file listeners
-    wrap.querySelectorAll('input[type="file"]').forEach(fi => {
-      fi.addEventListener('change', (e) => {
-        const label = fi.parentElement.querySelector('.file-name');
-        const names = Array.from(fi.files).map(f => f.name).join(', ');
-        label.textContent = names || 'No file chosen';
-        saveLocal();
-      });
-    });
-    return wrap;
-  }
-
-  document.getElementById('addDirector').addEventListener('click', () => {
-    const wrap = document.getElementById('directorsWrap');
-    wrap.appendChild(buildPersonCard('Director'));
-    saveLocal();
-  });
-  document.getElementById('addShareholder').addEventListener('click', () => {
-    const wrap = document.getElementById('shareholdersWrap');
-    wrap.appendChild(buildPersonCard('Shareholder'));
-    saveLocal();
-  });
-
-  // Review builder
-  function gatherData(){
-    const data = {};
-    // account
-    data.account = {
-      firstName: document.getElementById('firstName').value.trim(),
-      lastName: document.getElementById('lastName').value.trim(),
-      otherName: document.getElementById('otherName').value.trim(),
-      email: document.getElementById('email').value.trim(),
-      phone: document.getElementById('phone').value.trim(),
-    };
-    // personal
-    data.personal = {
-      country: document.getElementById('country').value,
-      state: document.getElementById('state').value,
-      city: document.getElementById('city').value,
-      address: document.getElementById('address').value,
-      photoName: document.getElementById('photoName').textContent,
-      idCardName: document.getElementById('idCardName').textContent,
-      signatureName: document.getElementById('signatureName').textContent,
-      proofName: document.getElementById('proofName').textContent
-    };
-    // identity
-    data.identity = {
-      idCountry: document.getElementById('idCountry').value,
-      idType: document.getElementById('idType').value,
-      idNumber: document.getElementById('idNumber').value,
-      issuedDate: document.getElementById('issuedDate').value,
-      expiryDate: document.getElementById('expiryDate').value,
-      idUploadName: document.getElementById('idUploadName').textContent
-    };
-    // business
-    data.business = {
-      businessName: document.getElementById('businessName').value,
-      regNumber: document.getElementById('regNumber').value,
-      regType: document.getElementById('regType').value,
-      country: document.getElementById('bizCountry').value,
-      bizEmail: document.getElementById('bizEmail').value,
-      bizPhone: document.getElementById('bizPhone').value,
-      website: document.getElementById('website').value,
-      supportPhone: document.getElementById('supportPhone').value,
-      docs: {
-        incorp: document.getElementById('incName').textContent,
-        cac: document.getElementById('cacName').textContent,
-        memart: document.getElementById('memartName').textContent,
-        bizProof: document.getElementById('bizProofName').textContent,
-        aml: document.getElementById('amlName').textContent,
-        opLicense: document.getElementById('opName').textContent
-      }
-    };
-    // use case
-    data.useCase = {
-      type: document.getElementById('useCaseType').value,
-      description: document.getElementById('useCaseDesc').value
-    };
-    // directors
-    data.directors = Array.from(document.querySelectorAll('#directorsWrap .personCard')).map(card => {
-      return {
-        firstName: card.querySelector('.p-first').value,
-        lastName: card.querySelector('.p-last').value,
-        otherName: card.querySelector('.p-other').value,
-        email: card.querySelector('.p-email').value,
-        phone: card.querySelector('.p-phone').value,
-        address: card.querySelector('.p-address').value,
-        country: card.querySelector('.p-country').value,
-        photo: card.querySelector('.p-photo-name').textContent,
-        id: card.querySelector('.p-id-name').textContent,
-        signature: card.querySelector('.p-sig-name').textContent,
-        proof: card.querySelector('.p-proof-name').textContent
-      };
-    });
-    data.shareholders = Array.from(document.querySelectorAll('#shareholdersWrap .personCard')).map(card => {
-      return {
-        firstName: card.querySelector('.p-first').value,
-        lastName: card.querySelector('.p-last').value,
-        otherName: card.querySelector('.p-other').value,
-        email: card.querySelector('.p-email').value,
-        phone: card.querySelector('.p-phone').value,
-        address: card.querySelector('.p-address').value,
-        country: card.querySelector('.p-country').value,
-        photo: card.querySelector('.p-photo-name').textContent,
-        id: card.querySelector('.p-id-name').textContent,
-        signature: card.querySelector('.p-sig-name').textContent,
-        proof: card.querySelector('.p-proof-name').textContent
-      };
-    });
-    data.meta = { submittedAt: new Date().toISOString() };
-    return data;
-  }
-
-  function buildReview(){
-    const review = document.getElementById('reviewSections');
-    review.innerHTML = '';
-    const data = gatherData();
-    // quick sections with edit anchor
-    const sections = [
-      {k:'account', t:'Account'},
-      {k:'personal', t:'Personal'},
-      {k:'identity', t:'Identity'},
-      {k:'business', t:'Business'},
-      {k:'useCase', t:'Use Case'},
-      {k:'directors', t:'Directors'},
-      {k:'shareholders', t:'Shareholders'}
-    ];
-    sections.forEach((s, idx) => {
-      const box = document.createElement('div');
-      box.style = 'display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px dashed #eef2f7';
-      const left = document.createElement('div');
-      left.innerHTML = `<strong>${s.t}</strong><div class="mini muted">${JSON.stringify(data[s.k]).slice(0,200)}${JSON.stringify(data[s.k]).length>200?'...':''}</div>`;
-      const editBtn = document.createElement('button');
-      editBtn.className = 'small-btn ghost';
-      editBtn.textContent = 'Edit';
-      editBtn.addEventListener('click', () => { showStep(idx+1); });
-      box.appendChild(left); box.appendChild(editBtn); review.appendChild(box);
-    });
-    // JSON preview
-    document.getElementById('jsonPreview').textContent = JSON.stringify(data, null, 2);
-  }
-
-  // Submit handler
-  document.getElementById('submitBtn').addEventListener('click', () => {
-    if(!document.getElementById('confirm').checked){ alert('Please confirm accuracy'); return; }
-    const payload = gatherData();
-    // Demo: show successful submission and clear storage
-    alert('Form submitted (demo). JSON payload will be logged to console.');
-    console.log('SUBMIT PAYLOAD:', payload);
-    localStorage.removeItem('msmeFormDraft');
-    // show a friendly submitted state
-    document.body.innerHTML = '<div style="font-family:Inter,system-ui;padding:40px;text-align:center"><h2>Thank you — submission received</h2><p class="muted">A real integration would send the payload to your backend here.</p></div>';
-  });
-
-  // Local save/load
-  function saveLocal(){
-    try{
-      const draft = {};
-      // account/basic
-      ['firstName','lastName','otherName','email','phone','country','state','city','address',
-       'businessName','regNumber','regType','bizEmail','bizPhone','website','supportPhone',
-       'useCaseType','useCaseDesc','idType','idNumber','issuedDate','expiryDate'
-      ].forEach(id => {
-        const el = document.getElementById(id);
-        if(el) draft[id] = el.value;
-      });
-      // file name captures
-      fileInputs.forEach(pair => {
-        const label = document.getElementById(pair[1]);
-        if(label) draft[pair[1]] = label.textContent;
-      });
-      // directors/shareholders content values (not files)
-      draft.directors = Array.from(document.querySelectorAll('#directorsWrap .personCard')).map(c => {
-        return {
-          first: c.querySelector('.p-first').value,
-          last: c.querySelector('.p-last').value,
-          other: c.querySelector('.p-other').value,
-          email: c.querySelector('.p-email').value,
-          phone: c.querySelector('.p-phone').value,
-          address: c.querySelector('.p-address').value,
-          country: c.querySelector('.p-country').value,
-          photoName: c.querySelector('.p-photo-name').textContent
-        };
-      });
-      draft.shareholders = Array.from(document.querySelectorAll('#shareholdersWrap .personCard')).map(c => {
-        return {
-          first: c.querySelector('.p-first').value,
-          last: c.querySelector('.p-last').value,
-          other: c.querySelector('.p-other').value,
-          email: c.querySelector('.p-email').value,
-          phone: c.querySelector('.p-phone').value,
-          address: c.querySelector('.p-address').value,
-          country: c.querySelector('.p-country').value,
-          photoName: c.querySelector('.p-photo-name').textContent
-        };
-      });
-      draft.otpVerified = state.otpVerified;
-      draft.otp = state.otp;
-      draft.step = state.step;
-      localStorage.setItem('msmeFormDraft', JSON.stringify(draft));
-    }catch(e){ console.warn('save failed', e); }
-  }
-  function loadLocal(){
-    const d = localStorage.getItem('msmeFormDraft');
-    if(!d) return;
-    try{
-      const draft = JSON.parse(d);
-      Object.keys(draft).forEach(k => {
-        if(k === 'directors' && Array.isArray(draft.directors)){
-          const wrap = document.getElementById('directorsWrap');
-          wrap.innerHTML = '';
-          draft.directors.forEach(d => wrap.appendChild(buildPersonCard('Director', {
-            firstName:d.first,lastName:d.last,otherName:d.other,email:d.email,phone:d.phone,
-            address:d.address,country:d.country,photoName:d.photoName
-          })));
-        } else if(k === 'shareholders' && Array.isArray(draft.shareholders)){
-          const wrap = document.getElementById('shareholdersWrap');
-          wrap.innerHTML = '';
-          draft.shareholders.forEach(s => wrap.appendChild(buildPersonCard('Shareholder', {
-            firstName:s.first,lastName:s.last,otherName:s.other,email:s.email,phone:s.phone,
-            address:s.address,country:s.country,photoName:s.photoName
-          })));
-        } else {
-          const el = document.getElementById(k);
-          if(el) el.value = draft[k];
-          else {
-            // file labels
-            const label = document.getElementById(k);
-            if(label && typeof draft[k] === 'string') label.textContent = draft[k];
-          }
-        }
-      });
-      if(draft.otpVerified) state.otpVerified = true;
-      if(draft.otp) state.otp = draft.otp;
-      showStep(draft.step || 1);
-    }catch(e){ console.warn('load failed', e); }
-  }
-
-  // initial
-  showStep(1);
-  loadLocal();
-
-  // autosave on input change
-  document.querySelectorAll('input,textarea,select').forEach(el=>{
-    el.addEventListener('input', () => saveLocal());
-    el.addEventListener('change', () => saveLocal());
-  });
-
-  // restore if user reloads
-  window.addEventListener('beforeunload', saveLocal);
-
-  // Make first director placeholder if none
-  if(!document.querySelector('#directorsWrap .personCard')) document.getElementById('directorsWrap').appendChild(buildPersonCard('Director'));
-  if(!document.querySelector('#shareholdersWrap .personCard')) document.getElementById('shareholdersWrap').appendChild(buildPersonCard('Shareholder'));
-
-})();
+  document.getElementById('msmeForm').onsubmit = e => {
+    e.preventDefault();
+    alert('Form submitted successfully!');
+  };
 </script>
+
 </body>
 </html>
